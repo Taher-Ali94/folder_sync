@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import time
 from dataclasses import dataclass
 
 from sync_tool.sync.scanner import FileSnapshot
@@ -51,7 +50,6 @@ class Comparator:
         all_paths = set(files_a.keys()) | set(files_b.keys()) | set(previous.keys())
         actions: list[SyncAction] = []
         conflicts: list[str] = []
-        _ = time.time()
 
         for rel in sorted(all_paths):
             a = files_a.get(rel)

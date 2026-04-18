@@ -1,0 +1,5 @@
+__pycache__/
+*.py[cod]
+.sync_state.json
+sync_config.json
+sync.log

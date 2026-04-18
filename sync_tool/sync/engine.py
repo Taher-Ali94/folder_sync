@@ -91,18 +91,19 @@ class SyncEngine:
         return metrics
 
     def _loop(self) -> None:
-        cfg = self.config_manager.get()
         while not self._stop_event.is_set():
             try:
                 self.run_once(confirm_mass_deletions=False)
             except Exception as exc:  # noqa: BLE001
                 self.logger.exception("sync cycle failed: %s", exc)
+            cfg = self.config_manager.get()
             self._stop_event.wait(cfg.interval_seconds)
 
     def start(self) -> None:
         """Start background synchronization."""
         if self._running:
             return
+        self._roots()
         self._stop_event.clear()
         self._thread = threading.Thread(target=self._loop, daemon=True)
         self._thread.start()

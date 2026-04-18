@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import asdict
 from pathlib import Path
 
 from fastapi import APIRouter
@@ -32,6 +33,6 @@ def build_router(engine: SyncEngine) -> APIRouter:
 
     @router.get("/metrics", response_model=MetricsResponse)
     async def metrics() -> MetricsResponse:
-        return MetricsResponse(**engine.last_metrics.__dict__)
+        return MetricsResponse(**asdict(engine.last_metrics))
 
     return router

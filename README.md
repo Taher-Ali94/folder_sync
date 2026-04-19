@@ -56,6 +56,40 @@ uvicorn api.main:app --reload
 
 > Compatibility entrypoint `api.main:app` forwards to `sync_tool.api.main:app`.
 
+## 4.1 Running the App (Streamlit UI)
+
+```bash
+streamlit run app.py
+```
+
+---
+
+## 4.2 How to Use (Step-by-step)
+
+1. Set **Folder A path** and **Folder B path** in the Streamlit UI.
+2. Click **Refresh Preview** to inspect planned changes before execution.
+3. Click **Run One Sync** for one cycle, or **Start Continuous Sync** for background sync.
+4. Review **Metrics**, **Conflict Panel**, and **Logs Panel** to monitor results.
+
+---
+
+## 4.3 Testing Tools (Built-in)
+
+The Streamlit app includes built-in testing buttons:
+
+- **Generate Sample Data**: creates `test_data/folderA` and `test_data/folderB` with sample files.
+- **Run Test: New File**: creates a new file and verifies propagation.
+- **Run Test: Conflict**: creates concurrent edits and exercises conflict handling.
+- **Run Test: Deletion**: verifies deletion propagation behavior.
+
+---
+
+## 4.4 Troubleshooting
+
+- **Invalid paths**: confirm both folders are absolute and accessible.
+- **Permission errors**: check read/write permissions for both folders and project files.
+- **Sync issues**: run **Refresh Preview**, review **Conflict Panel**, then inspect **Logs Panel** (`sync.log`).
+
 ## 5. 🔥 FULL API DOCUMENTATION
 
 Base URL: `http://localhost:8000`

@@ -38,23 +38,23 @@ def _require_dirs(engine: SyncEngine) -> tuple[Path, Path]:
 def test_new_file_sync(engine: SyncEngine) -> dict[str, object]:
     """Create a new file in A, sync once, and return the result snapshot."""
     dir_a, dir_b = _require_dirs(engine)
-    rel = f"new_file_{int(time.time() * 1000)}.txt"
-    (dir_a / rel).write_text("new file from test_new_file_sync\n", encoding="utf-8")
+    filename = f"new_file_{int(time.time() * 1000)}.txt"
+    (dir_a / filename).write_text("new file from test_new_file_sync\n", encoding="utf-8")
 
     preview = [{"action": a.action, "path": a.path, "reason": a.reason} for a in engine.preview()]
     metrics = engine.run_once(confirm_mass_deletions=True)
-    exists_in_b = (dir_b / rel).exists()
+    exists_in_b = (dir_b / filename).exists()
 
-    return {"scenario": "new_file_sync", "file": rel, "preview": preview, "metrics": metrics.__dict__, "success": exists_in_b}
+    return {"scenario": "new_file_sync", "file": filename, "preview": preview, "metrics": metrics.__dict__, "success": exists_in_b}
 
 
 def test_conflict_case(engine: SyncEngine) -> dict[str, object]:
     """Force a conflict by changing same file in both folders, then sync."""
     dir_a, dir_b = _require_dirs(engine)
-    rel = "conflict_case.txt"
+    filename = "conflict_case.txt"
     now = int(time.time())
-    (dir_a / rel).write_text(f"A version {now}\n", encoding="utf-8")
-    (dir_b / rel).write_text(f"B version {now}\n", encoding="utf-8")
+    (dir_a / filename).write_text(f"A version {now}\n", encoding="utf-8")
+    (dir_b / filename).write_text(f"B version {now}\n", encoding="utf-8")
 
     cfg = engine.config_manager.get()
     previous_strategy = cfg.conflict_strategy
@@ -67,20 +67,20 @@ def test_conflict_case(engine: SyncEngine) -> dict[str, object]:
 
     return {
         "scenario": "conflict_case",
-        "file": rel,
+        "file": filename,
         "preview": preview,
         "conflicts": engine.last_conflicts,
         "metrics": metrics.__dict__,
-        "success": rel in engine.last_conflicts or metrics.conflicts > 0,
+        "success": filename in engine.last_conflicts or metrics.conflicts > 0,
     }
 
 
 def test_deletion_sync(engine: SyncEngine) -> dict[str, object]:
     """Create and sync a file, then delete in A and sync deletion to B."""
     dir_a, dir_b = _require_dirs(engine)
-    rel = "deletion_case.txt"
-    path_a = dir_a / rel
-    path_b = dir_b / rel
+    filename = "deletion_case.txt"
+    path_a = dir_a / filename
+    path_b = dir_b / filename
 
     path_a.write_text("seed file for deletion scenario\n", encoding="utf-8")
     engine.run_once(confirm_mass_deletions=True)
@@ -93,7 +93,7 @@ def test_deletion_sync(engine: SyncEngine) -> dict[str, object]:
 
     return {
         "scenario": "deletion_sync",
-        "file": rel,
+        "file": filename,
         "preview": preview,
         "metrics": metrics.__dict__,
         "success": not path_b.exists(),

@@ -154,7 +154,7 @@ def main() -> None:
                     msg += " Deletion actions were skipped."
                 st.success(msg)
         except Exception as exc:  # noqa: BLE001
-            st.error(f"Sync failed: {exc}")
+            st.error(f"Sync failed for A='{folder_a}' and B='{folder_b}': {exc}")
 
     if b2.button("Start Continuous Sync", use_container_width=True):
         try:
@@ -239,9 +239,14 @@ def main() -> None:
     st.subheader("Logs Panel")
     auto_refresh_logs = st.checkbox("Auto-refresh logs", value=True)
     refresh_seconds = st.slider("Log refresh interval (seconds)", min_value=2, max_value=30, value=5)
-    if auto_refresh_logs:
-        st.markdown(f"<meta http-equiv='refresh' content='{refresh_seconds}'>", unsafe_allow_html=True)
-    st.text_area("Recent logs", value="\n".join(_safe_read_logs(300)), height=220)
+    if auto_refresh_logs and hasattr(st, "fragment"):
+        @st.fragment(run_every=f"{refresh_seconds}s")
+        def _live_logs() -> None:
+            st.text_area("Recent logs", value="\n".join(_safe_read_logs(300)), height=220)
+
+        _live_logs()
+    else:
+        st.text_area("Recent logs", value="\n".join(_safe_read_logs(300)), height=220)
 
     st.subheader("How to Use This Tool")
     st.markdown(

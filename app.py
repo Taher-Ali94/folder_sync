@@ -154,7 +154,7 @@ def main() -> None:
                     msg += " Deletion actions were skipped."
                 st.success(msg)
         except Exception as exc:  # noqa: BLE001
-            st.error(f"Sync failed for A='{folder_a}' and B='{folder_b}': {exc}")
+            st.error(f"Sync failed: {exc}")
 
     if b2.button("Start Continuous Sync", use_container_width=True):
         try:
